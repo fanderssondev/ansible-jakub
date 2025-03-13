@@ -1,0 +1,12 @@
+all:
+  hosts:
+  vars:
+    ansible_user: ansible
+    ansible_python_interpreter: /usr/bin/python3
+  children:
+    server:
+      hosts:
+        rocky9a:
+    # nfs_client:
+    #   hosts:
+    #     rocky9b:

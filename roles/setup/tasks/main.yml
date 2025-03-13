@@ -1,0 +1,37 @@
+---
+- name: Set selinux to permissive mode
+  when:
+    - ansible_os_family == 'RedHat'
+    - ansible_distribution_major_version | int > 5
+  ansible.posix.selinux:
+    state: permissive
+    policy: targeted
+    update_kernel_param: true
+
+# Redundant now given the next play
+# Prevent root login ========================
+- name: Disable Root Login
+  ansible.builtin.lineinfile:
+    dest: /etc/ssh/sshd_config
+    regexp: ^(#?PermitRootLogin)+\s*
+    line: "PermitRootLogin no"
+    state: present
+    backup: true
+  become: true
+  notify:
+    - restart_ssh
+
+- name: Install needed packages
+  when: ansible_distribution
+  ansible.builtin.package:
+    name: "{{ setup_packages }}"
+
+- name: Create groups
+  ansible.builtin.group:
+    name: "{{ item.name }}"
+    gid: "{{ item.gid | default(omit) }}"
+  loop: "{{ setup_groups }}"
+
+- name: Include Tasks for user
+  ansible.builtin.include_tasks: users.yml
+  loop: "{{ setup_users }}"

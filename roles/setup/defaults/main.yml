@@ -1,0 +1,23 @@
+---
+setup_packages:
+  - libselinux
+  - libsemanage
+  - python3-libsemanage
+
+setup_groups: []
+  # - name: group_name # group name here
+  #   gid: 5000 # group_gid_here
+
+setup_users: []
+  # - name: username
+  #   user_id: 5000
+  #   main_group: groupname # if does not exists system will create it
+  #   group_list:
+        # - group1
+        # - group2
+  #   shell: /bin/bash
+  #   password: <ecrypted hashed password here> # more: https://docs.ansible.com/ansible/latest/collections/ansible/builtin/password_hash_filter.html
+  #   authorized_keys:
+  #     - key1
+  #     - key2
+  #   sudo: true
