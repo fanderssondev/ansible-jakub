@@ -6,13 +6,17 @@
     owner: "{{ item.owner | default('root') }}"
     group: "{{ item.group | default('root') }}"
     mode: "{{ item.mode | default('0755') }}"
+  loop: "{{ nginx_dirs }}"
+  notify:
+    - restart_nginx
 
-- name: Create files for nginx
-  ansible.builtin.copy:
+- name: Copy files/templates
+  ansible.builtin.template:
+    src: "{{ item.src }}"
     dest: "{{ item.dest }}"
-    content: "{{ item.content }}"
-    owner: nginx
-    group: nginx
-    mode: "0644"
+    owner: "{{ item.owner }}"
+    group: "{{ item.group }}"
+    mode: "{{ item.mode | default('0755') }}"
+  loop: "{{ nginx_websites }}"
   notify:
     - restart_nginx

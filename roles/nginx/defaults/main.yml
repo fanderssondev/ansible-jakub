@@ -1,20 +1,20 @@
 nginx_packages:
   - nginx
 
-nginx_websites:
-  []
-  # - dest: /websites/www.domain.org/index.html
-  #   content: "<h1>Welcome to domain.org</h1>"
-  #   path: /websites/www.domain.org
-  #   state: directory
-  #   recurse: true
-  #   owner: nginx
-  #   group: nginx
-
 nginx_dirs:
   []
   # - path: # path to dir here
   #   state: directory
-  #   recurse: true # create dirs recursively
+  #   recurse: true
   #   owner: nginx
   #   group: nginx
+  #   mode: "0755"
+
+nginx_websites:
+  []
+  # - src: index.html.j2
+  #   dest: /websites/www.domain.org/index.html
+  #   site: www.domain.org
+  #   owner: nginx
+  #   group: nginx
+  #   mode: "0755"

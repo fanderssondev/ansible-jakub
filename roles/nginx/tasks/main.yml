@@ -13,16 +13,5 @@
   notify:
     - restart_nginx
 
-- name: Create logs directories
-  ansible.builtin.file:
-    path: "{{ item.path }}"
-    state: "{{ item.state }}"
-    recurse: "{{ item.recurse | default(omit) }}"
-    owner: "{{ item.owner | default('root') }}"
-    group: "{{ item.group | default('root') }}"
-    mode: "{{ item.mode | default('0755') }}"
-  loop: "{{ nginx_dirs }}"
-
 - name: Include Tasks for nginx
   ansible.builtin.include_tasks: nginx.yml
-  loop: "{{ nginx_websites }}"

@@ -1,7 +1,8 @@
-# - name: Open firewall port / services
-#   ansible.posix.firewalld:
-#     service: "{{ item.service | default(omit) }}"
-#     permanent: true
-#     state: enabled
-#     immediate: true
-#   loop: "{{ my_fw }}"
+- name: Install needed packages
+  when: ansible_distribution
+  ansible.builtin.package:
+    name: "{{ firewall_packages }}"
+
+- name: Open services
+  ansible.builtin.include_tasks: firewall.yml
+  loop: "{{ firewall_services }}"
