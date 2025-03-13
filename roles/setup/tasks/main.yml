@@ -8,8 +8,6 @@
     policy: targeted
     update_kernel_param: true
 
-# Redundant now given the next play
-# Prevent root login ========================
 - name: Disable Root Login
   ansible.builtin.lineinfile:
     dest: /etc/ssh/sshd_config

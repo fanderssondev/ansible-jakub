@@ -1,64 +1,22 @@
 ---
-- name: Configure Linux host
+# - name: Configure Linux host
+#   hosts: all
+#   become: true
+#   vars:
+#     setup_groups: "{{ my_groups }}"
+#     setup_users: "{{ my_users }}"
+#   tasks:
+#     - name: Include Setup Role
+#       ansible.builtin.include_role:
+#         name: setup
+
+- name: Configure nginx
   hosts: all
   become: true
   vars:
-    setup_groups: "{{ my_groups }}"
-    setup_users: "{{ my_users }}"
+    nginx_dirs: "{{ my_dirs }}"
+    nginx_websites: "{{ my_websites }}"
   tasks:
-    - name: Include Setup Role
+    - name: Include nginx Role
       ansible.builtin.include_role:
-        name: setup
-
-
-    # # Create directories ========================
-    # - name: Create logs directories
-    #   ansible.builtin.file:
-    #     path: "{{ item.path }}"
-    #     state: "{{ item.state }}"
-    #     recurse: "{{ item.recurse | default(omit) }}"
-    #     owner: "{{ item.owner | default('root') }}"
-    #     group: "{{ item.group | default('root') }}"
-    #     mode: "{{ item.mode | default('0755') }}"
-    #   loop: "{{ my_dirs }}"
-
-  #   - name: Copy Nginx configuration
-  #     ansible.builtin.copy:
-  #       src: '{{ playbook_dir }}/nginx.conf'
-  #       dest: /etc/nginx/nginx.conf
-  #       owner: root
-  #       group: root
-  #       mode: '0644'
-  #     notify:
-  #       - restart_nginx
-
-
-  #   - name: Create files for nginx
-  #     ansible.builtin.copy:
-  #       dest: "{{ item.dest }}"
-  #       content: "{{ item.content }}"
-  #       owner: nginx
-  #       group: nginx
-  #       mode: '0644'
-  #     loop: "{{ nginx_websites }}"
-  #     notify:
-  #       - restart_nginx
-
-  #   # Open port 80 ==============================
-  #   - name: Open firewall port / services
-  #     ansible.posix.firewalld:
-  #       service: "{{ item.service | default(omit) }}"
-  #       permanent: true
-  #       state: enabled
-  #       immediate: true
-  #     loop: "{{ my_fw }}"
-
-  # # # Handlers ====================================
-
-  #   - name: Restart nginx
-  #     ansible.builtin.systemd:
-  #       name: nginx
-  #       state: restarted
-  #       enabled: true
-  #       daemon_reload: true
-  #     listen: restart_nginx
+        name: nginx

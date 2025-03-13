@@ -1,0 +1,28 @@
+- name: Install needed packages
+  when: ansible_distribution
+  ansible.builtin.package:
+    name: "{{ nginx_packages }}"
+
+- name: Copy Nginx configuration
+  ansible.builtin.copy:
+    src: nginx.conf
+    dest: /etc/nginx/nginx.conf
+    owner: root
+    group: root
+    mode: "0644"
+  notify:
+    - restart_nginx
+
+- name: Create logs directories
+  ansible.builtin.file:
+    path: "{{ item.path }}"
+    state: "{{ item.state }}"
+    recurse: "{{ item.recurse | default(omit) }}"
+    owner: "{{ item.owner | default('root') }}"
+    group: "{{ item.group | default('root') }}"
+    mode: "{{ item.mode | default('0755') }}"
+  loop: "{{ nginx_dirs }}"
+
+- name: Include Tasks for nginx
+  ansible.builtin.include_tasks: nginx.yml
+  loop: "{{ nginx_websites }}"

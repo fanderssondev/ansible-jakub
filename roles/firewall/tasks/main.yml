@@ -1,0 +1,7 @@
+# - name: Open firewall port / services
+#   ansible.posix.firewalld:
+#     service: "{{ item.service | default(omit) }}"
+#     permanent: true
+#     state: enabled
+#     immediate: true
+#   loop: "{{ my_fw }}"

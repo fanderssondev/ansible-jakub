@@ -1,0 +1,97 @@
+packages:
+  # - nginx
+  # - libselinux
+  # - libsemanage
+  # - python3-libsemanage
+  - python3-firewall
+  # - nfs-utils
+
+my_users:
+  - name: john
+    sudo: true
+    user_id: 4000
+    main_group: john
+    group_list:
+      - developers
+      - users
+    password: "$6$rounds=656000$mysecretsalt$L5TfnY7pEWOF0TQfksow3vO3hizg7G.P7sECrIdg8nEyz2jLgO59o3doQcnI/2qMdFYIH1J1HYyXuzPDfIryN."
+    authorized_keys:
+      - "{{ lookup('file', '/home/fredrik/.ssh/id_ansible.pub') }}"
+  - name: jane
+    user_id: 4100
+    main_group: users
+    group_list:
+      - testers
+    authorized_keys:
+      - "{{ lookup('file', '/home/fredrik/.ssh/id_ansible.pub') }}"
+
+my_groups:
+  - name: developers
+    gid: 5000
+  - name: testers
+  - name: users
+    gid: 4100
+  - name: john
+    gid: 4000
+
+my_fw:
+  - service: nfs
+  - service: http
+  - service: https
+
+my_websites:
+  - dest: /websites/www.domain.org/index.html
+    content: "<h1>Welcome to domain.org</h1>"
+    path: /websites/www.domain.org
+    state: directory
+    recurse: true
+    owner: nginx
+    group: nginx
+  - dest: /websites/www.example.net/index.html
+    content: "<h1>Welcome to example.net</h1>"
+    path: /websites/www.example.net
+    state: directory
+    recurse: true
+    owner: nginx
+    group: nginx
+
+my_dirs:
+  - path: /usr/share/nginx/logs
+    state: directory
+    recurse: true
+    owner: nginx
+    group: nginx
+  - path: /usr/share/nginx/logs/error.log
+    state: touch
+    owner: nginx
+    group: nginx
+    mode: "0644"
+#
+#
+# nginx_websites:
+#   - dest: /websites/www.domain.org/index.html
+#     content: "<h1>Welcome to domain.org</h1>"
+#   - dest: /websites/www.example.net/index.html
+#     content: "<h1>Welcome to example.net</h1>"
+
+# my_dirs:
+#   - path: /usr/share/nginx/logs
+#     state: directory
+#     recurse: true
+#     owner: nginx
+#     group: nginx
+#   - path: /websites/www.example.net
+#     state: directory
+#     recurse: true
+#     owner: nginx
+#     group: nginx
+#   - path: /websites/www.domain.org
+#     state: directory
+#     recurse: true
+#     owner: nginx
+#     group: nginx
+#   - path: /usr/share/nginx/logs/error.log
+#     state: touch
+#     owner: nginx
+#     group: nginx
+#     mode: "0644"
