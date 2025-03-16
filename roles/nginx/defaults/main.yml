@@ -1,3 +1,4 @@
+---
 nginx_packages:
   - nginx
 

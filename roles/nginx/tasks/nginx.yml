@@ -1,3 +1,4 @@
+---
 - name: Create logs directories and files
   ansible.builtin.file:
     path: "{{ item.path }}"

@@ -1,8 +1,7 @@
----
 - name: Showing Vars Precende
   hosts: all
-  vars:
-    # jakub_var: "vars_value"
+  # vars:
+  # jakub_var: "vars_value"
   tasks:
     - name: Display Vars
       ansible.builtin.debug:

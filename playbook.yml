@@ -8,6 +8,7 @@
     nginx_dirs: "{{ my_dirs }}"
     nginx_websites: "{{ my_websites }}"
     firewall_services: "{{ my_fw }}"
+
   tasks:
     - name: Include Setup Role
       ansible.builtin.include_role:
