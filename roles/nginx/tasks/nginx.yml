@@ -1,4 +1,4 @@
-- name: Create logs directories
+- name: Create logs directories and files
   ansible.builtin.file:
     path: "{{ item.path }}"
     state: "{{ item.state }}"
@@ -6,6 +6,8 @@
     owner: "{{ item.owner | default('root') }}"
     group: "{{ item.group | default('root') }}"
     mode: "{{ item.mode | default('0755') }}"
+    modification_time: "{{ item.modification_time | default(omit) }}"
+    access_time: "{{ item.access_time | default(omit) }}"
   loop: "{{ nginx_dirs }}"
   notify:
     - restart_nginx

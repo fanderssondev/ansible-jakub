@@ -74,3 +74,5 @@ my_dirs:
     owner: nginx
     group: nginx
     mode: "0644"
+    modification_time: preserve
+    access_time: preserve
