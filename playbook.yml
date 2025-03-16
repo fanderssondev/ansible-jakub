@@ -1,31 +1,22 @@
 ---
-# - name: Configure linux host
-#   hosts: all
-#   become: true
-#   vars:
-#     setup_groups: "{{ my_groups }}"
-#     setup_users: "{{ my_users }}"
-#   tasks:
-#     - name: Include Setup Role
-#       ansible.builtin.include_role:
-#         name: setup
-
-- name: Configure nginx
+- name: Configure linux host
   hosts: all
   become: true
   vars:
+    setup_groups: "{{ my_groups }}"
+    setup_users: "{{ my_users }}"
     nginx_dirs: "{{ my_dirs }}"
     nginx_websites: "{{ my_websites }}"
+    firewall_services: "{{ my_fw }}"
   tasks:
+    - name: Include Setup Role
+      ansible.builtin.include_role:
+        name: setup
+
     - name: Include nginx role
       ansible.builtin.include_role:
         name: nginx
-# - name: Configure firewall
-#   hosts: all
-#   become: true
-#   vars:
-#     firewall_services: "{{ my_fw }}"
-#   tasks:
-#     - name: Include nginx role
-#       ansible.builtin.include_role:
-#         name: firewall
+
+    - name: Include nginx role
+      ansible.builtin.include_role:
+        name: firewall
