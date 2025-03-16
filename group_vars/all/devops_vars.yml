@@ -69,7 +69,7 @@ my_dirs:
     # recurse: true
     owner: nginx
     group: nginx
-  - path: /usr/share/nginx/logs/error.log # BUG Always changes the state
+  - path: /usr/share/nginx/logs/error.log
     state: touch
     owner: nginx
     group: nginx
