@@ -1,0 +1,5 @@
+# nginx basic auth (rhel)
+# [x] install httpd-tools
+# [ ] install passlib with pip3
+# [ ] Create password file with htpasswd
+# [x] Configure nginx.conf with basic auth

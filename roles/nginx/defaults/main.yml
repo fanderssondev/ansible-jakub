@@ -1,6 +1,10 @@
 ---
 nginx_packages:
   - nginx
+  - httpd-tools
+
+nginx_pip_packages:
+  - passlib
 
 nginx_dirs:
   []
@@ -19,3 +23,12 @@ nginx_websites:
   #   owner: nginx
   #   group: nginx
   #   mode: "0755"
+
+nginx_auth:
+  []
+  # - path: /etc/nginx/passwdfile
+  #   name: admin
+  #   password: "admin123"
+  #   owner: root
+  #   group: root
+  #   mode: "0640"

@@ -13,6 +13,22 @@
   notify:
     - restart_nginx
 
+- name: Install passlib with pip
+  ansible.builtin.pip:
+    name: "{{ nginx_pip_packages }}"
+
+- name: Add a user to a password file and ensure permissions are set
+  community.general.htpasswd:
+    path: "{{ item.path }}"
+    name: "{{ item.name }}"
+    password: "{{ item.password }}"
+    owner: "{{ item.owner }}"
+    group: "{{ item.group }}"
+    mode: "{{ item.mode | default('0660') }}"
+  loop: "{{ nginx_auth }}"
+  notify:
+    - restart_nginx
+
 - name: Copy files/templates
   ansible.builtin.template:
     src: "{{ item.src }}"
