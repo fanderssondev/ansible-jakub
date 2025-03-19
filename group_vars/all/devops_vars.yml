@@ -6,6 +6,13 @@ packages:
   # - python3-firewall
   # - nfs-utils
 
+my_hosts:
+  - src: hosts.j2
+    dest: /etc/hosts
+    owner: root
+    group: root
+    mode: "0644"
+
 my_users:
   - name: john
     sudo: true

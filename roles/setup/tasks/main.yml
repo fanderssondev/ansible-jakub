@@ -19,6 +19,15 @@
   notify:
     - restart_ssh
 
+- name: Add hosts
+  ansible.builtin.template:
+    src: "{{ item.src }}"
+    dest: "{{ item.dest }}"
+    owner: "{{ item.owner }}"
+    group: "{{ item.group }}"
+    mode: "0644"
+  loop: "{{ setup_templates }}"
+
 - name: Install needed packages
   when: ansible_distribution
   ansible.builtin.package:

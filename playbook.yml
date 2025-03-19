@@ -5,6 +5,7 @@
   vars:
     setup_groups: "{{ my_groups }}"
     setup_users: "{{ my_users }}"
+    setup_templates: "{{ my_hosts }}"
     nginx_dirs: "{{ my_dirs }}"
     nginx_websites: "{{ my_websites }}"
     firewall_services: "{{ my_fw }}"
