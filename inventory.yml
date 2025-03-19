@@ -5,9 +5,9 @@ all:
     ansible_user: ansible
     ansible_python_interpreter: /usr/bin/python3
   children:
-    server:
+    rhel:
       hosts:
         rocky9a:
-      # nfs_client:
-      #   hosts:
-      #     rocky9b:
+    debian:
+      hosts:
+        ubuntu24a:
