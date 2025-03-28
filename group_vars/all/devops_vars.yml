@@ -83,12 +83,3 @@ my_dirs:
     mode: "0644"
     modification_time: preserve
     access_time: preserve
-
-# TODO Setup vault to store password
-my_auth:
-  - path: /etc/nginx/.htpasswd
-    name: admin
-    password: "admin123"
-    owner: nginx
-    group: nginx
-    mode: "0640"
