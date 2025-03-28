@@ -3,7 +3,9 @@
 # [x] install passlib with pip3
 # [x] Create password file with htpasswd
 # [x] Configure nginx.conf with basic auth
-# [ ] Store secrets (username and password) in vault
+# [x] Store secrets (username and password) in vault
 
 # ssl certificate
-# [ ] 
+# [ ] 1 website available through ssl (https)
+# [ ] create self signed certificate. 
+# [ ] Either encrypt cert or create dynamically
