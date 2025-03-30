@@ -63,17 +63,14 @@ my_websites:
 my_dirs:
   - path: /usr/share/nginx/logs
     state: directory
-    # recurse: true
     owner: nginx
     group: nginx
   - path: /websites/www.example.net
     state: directory
-    # recurse: true
     owner: nginx
     group: nginx
   - path: /websites/www.domain.org
     state: directory
-    # recurse: true
     owner: nginx
     group: nginx
   - path: /usr/share/nginx/logs/error.log
@@ -83,3 +80,18 @@ my_dirs:
     mode: "0644"
     modification_time: preserve
     access_time: preserve
+  - path: /etc/ssl/private
+    state: directory
+    mode: "0700"
+
+my_files:
+  - src: nginx.conf
+    dest: /etc/nginx/nginx.conf
+    owner: root
+    group: root
+    mode: "0644"
+  - src: www.domain.org.crt
+    dest: /etc/ssl/certs/www.domain.org.crt
+  - src: www.domain.org.key
+    dest: /etc/ssl/private/www.domain.org.key
+    mode: "0600"

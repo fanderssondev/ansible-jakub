@@ -32,3 +32,11 @@ nginx_auth:
   #   owner: root
   #   group: root
   #   mode: "0640"
+
+nginx_files:
+  []
+  # - src: nginx.conf
+  #   dest: /etc/nginx/nginx.conf
+  #   owner: root
+  #   group: root
+  #   mode: "0644"

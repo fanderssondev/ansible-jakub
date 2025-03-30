@@ -13,9 +13,16 @@
   notify:
     - restart_nginx
 
-- name: Install passlib with pip
-  ansible.builtin.pip:
-    name: "{{ nginx_pip_packages }}"
+- name: Copy Nginx configuration
+  ansible.builtin.copy:
+    src: "{{ item.src }}"
+    dest: "{{ item.dest }}"
+    owner: "{{ item.owner | default('root') }}"
+    group: "{{ item.group | default('root') }}"
+    mode: "{{ item.mode | default('0644') }}"
+  loop: "{{ nginx_files }}"
+  notify:
+    - restart_nginx
 
 - name: Add a user to a password file and ensure permissions are set
   community.general.htpasswd:
@@ -29,7 +36,7 @@
   notify:
     - restart_nginx
 
-- name: Copy files/templates
+- name: Copy templates
   ansible.builtin.template:
     src: "{{ item.src }}"
     dest: "{{ item.dest }}"
@@ -39,3 +46,9 @@
   loop: "{{ nginx_websites }}"
   notify:
     - restart_nginx
+# - name: Generate a Self Signed OpenSSL certificate
+#   community.crypto.x509_certificate:
+#     path: /etc/ssl/crt/www.domain.org.crt
+#     privatekey_path: /etc/ssl/private/www.domain.org.pem
+#     csr_path: www.domain.org.csr
+#     provider: selfsigned

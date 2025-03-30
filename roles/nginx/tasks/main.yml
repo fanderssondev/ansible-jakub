@@ -4,15 +4,9 @@
   ansible.builtin.package:
     name: "{{ nginx_packages }}"
 
-- name: Copy Nginx configuration
-  ansible.builtin.copy:
-    src: nginx.conf
-    dest: /etc/nginx/nginx.conf
-    owner: root
-    group: root
-    mode: "0644"
-  notify:
-    - restart_nginx
+- name: Install pip packages
+  ansible.builtin.pip:
+    name: "{{ nginx_pip_packages }}"
 
 - name: Include Tasks for nginx
   ansible.builtin.include_tasks: nginx.yml
