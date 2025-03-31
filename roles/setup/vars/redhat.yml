@@ -1,0 +1,5 @@
+---
+setup_packages:
+  - libselinux
+  - libsemanage
+  - python3-libsemanage

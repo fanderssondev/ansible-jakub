@@ -1,0 +1,6 @@
+nginx_packages:
+  - nginx
+  - httpd-tools
+
+nginx_pip_packages:
+  - passlib

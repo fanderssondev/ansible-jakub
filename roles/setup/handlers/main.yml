@@ -1,7 +1,17 @@
 ---
 - name: Restart ssh
+  when: ansible_os_family == 'Redhat'
   ansible.builtin.systemd:
     name: sshd
+    state: restarted
+    enabled: true
+    daemon_reload: true
+  listen: restart_ssh
+
+- name: Restart ssh
+  when: ansible_os_family == 'Debian'
+  ansible.builtin.systemd:
+    name: ssh
     state: restarted
     enabled: true
     daemon_reload: true

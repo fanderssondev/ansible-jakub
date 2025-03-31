@@ -1,6 +1,7 @@
 ---
 firewall_packages:
-  - python3-firewall
+  []
+  # - python3-firewall # List of packages to be installed
 
 firewall_services:
   []

@@ -10,8 +10,8 @@
 192.168.223.106 rocky9b
 192.168.223.107 rocky9c
 
-192.168.223.105 www.example.net
-192.168.223.105 www.domain.org
+{{ ansible_all_ipv4_addresses[0] }} www.example.net
+{{ ansible_all_ipv4_addresses[0] }} www.domain.org
 
 {% elif ansible_all_ipv4_addresses[0].startswith('192.168.56.') or (ansible_all_ipv4_addresses | length > 1 and ansible_all_ipv4_addresses[1].startswith('192.168.56.')) %}
 192.168.56.101 rocky8a
@@ -22,6 +22,6 @@
 192.168.56.106 rocky9b
 192.168.56.107 rocky9c
 
-192.168.56.105 www.example.net
-192.168.56.105 www.domain.org
+{{ ansible_all_ipv4_addresses[0] }} www.example.net
+{{ ansible_all_ipv4_addresses[0] }} www.domain.org
 {% endif %}

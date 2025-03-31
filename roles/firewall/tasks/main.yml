@@ -1,8 +1,13 @@
+---
 - name: Install needed packages
   when: ansible_distribution
   ansible.builtin.package:
     name: "{{ firewall_packages }}"
 
-- name: Open services
-  ansible.builtin.include_tasks: firewall.yml
-  loop: "{{ firewall_services }}"
+- name: Include tasks for Redhat distros
+  when: ansible_os_family == 'RedHat'
+  ansible.builtin.include_tasks: redhat.yml
+
+- name: Include tasks for Debian distros
+  when: ansible_os_family == 'Debian'
+  ansible.builtin.include_tasks: debian.yml

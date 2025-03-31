@@ -1,9 +1,4 @@
 ---
-setup_packages:
-  - libselinux
-  - libsemanage
-  - python3-libsemanage
-
 setup_groups:
   []
   # - name: group_name # group name here

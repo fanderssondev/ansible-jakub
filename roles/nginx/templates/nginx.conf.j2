@@ -1,6 +1,6 @@
 # daemon            off;
 worker_processes  2;
-user              nginx;
+user              {% if ansible_os_family == "RedHat" %}nginx{% elif ansible_os_family == "Debian" %}www-data{% endif %};
 
 events {
     use           epoll;

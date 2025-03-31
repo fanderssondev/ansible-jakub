@@ -1,0 +1,12 @@
+---
+- name: Allow everything and enable UFW
+  community.general.ufw:
+    state: enabled
+    policy: allow
+
+- name: Open firewall name / services
+  community.general.ufw:
+    rule: "{{ item.rule }}"
+    name: "{{ item.name }}"
+    proto: "{{ item.proto }}"
+  loop: "{{ firewall_services }}"

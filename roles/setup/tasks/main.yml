@@ -1,12 +1,7 @@
 ---
-- name: Set selinux to permissive mode
-  when:
-    - ansible_os_family == 'RedHat'
-    - ansible_distribution_major_version | int > 5
-  ansible.posix.selinux:
-    state: permissive
-    policy: targeted
-    update_kernel_param: true
+- name: Include OS specific variables
+  ansible.builtin.include_vars:
+    file: "{{ ansible_os_family | lower }}.yml"
 
 - name: Disable Root Login
   ansible.builtin.lineinfile:
@@ -32,6 +27,15 @@
   when: ansible_distribution
   ansible.builtin.package:
     name: "{{ setup_packages }}"
+    state: present
+
+- name: Include tasks for Redhat distros
+  when: ansible_os_family == 'RedHat'
+  ansible.builtin.include_tasks: redhat.yml
+
+# - name: Include tasks for Debian distros
+#   when: ansible_os_family == 'Debian'
+#   ansible.builtin.include_tasks: debian.yml
 
 - name: Create groups
   ansible.builtin.group:

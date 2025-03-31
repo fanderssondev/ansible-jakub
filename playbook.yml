@@ -9,8 +9,7 @@
     nginx_dirs: "{{ my_dirs }}"
     nginx_auth: "{{ my_auth }}"
     nginx_files: "{{ my_files }}"
-    nginx_websites: "{{ my_websites }}"
-    firewall_services: "{{ my_fw }}"
+    nginx_templates: "{{ my_templates }}"
 
   tasks:
     - name: Include Setup Role

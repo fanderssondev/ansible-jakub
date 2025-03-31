@@ -1,0 +1,7 @@
+---
+firewall_packages:
+  - python3-firewall
+
+firewall_services:
+  - service: http
+  - service: https

@@ -1,0 +1,13 @@
+---
+firewall_packages:
+
+firewall_services:
+  - rule: limit
+    name: ssh
+    proto: tcp
+  - rule: allow
+    name: http
+    proto: tcp
+  - rule: allow
+    name: https
+    proto: tcp
