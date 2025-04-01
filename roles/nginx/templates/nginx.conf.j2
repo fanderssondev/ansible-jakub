@@ -51,6 +51,7 @@ http {
 
         ssl_certificate     /etc/ssl/certs/www.domain.org.crt;
         ssl_certificate_key /etc/ssl/private/www.domain.org.key;
+        ssl_dhparam /etc/ssl/certs/dhparam.pem;
 
         ssl_protocols       TLSv1.2 TLSv1.3;
         ssl_ciphers         HIGH:!aNULL:!MD5;

@@ -96,3 +96,6 @@ my_files:
   - src: default.key
     dest: /etc/ssl/private/default.key
     mode: "0600"
+  - src: dhparam.pem
+    dest: /etc/ssl/certs/dhparam.pem
+    mode: "0600"
