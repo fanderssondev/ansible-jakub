@@ -90,3 +90,9 @@ my_files:
   - src: www.domain.org.key
     dest: /etc/ssl/private/www.domain.org.key
     mode: "0600"
+  - src: default.crt
+    dest: /etc/ssl/certs/default.crt
+    mode: "0600"
+  - src: default.key
+    dest: /etc/ssl/private/default.key
+    mode: "0600"

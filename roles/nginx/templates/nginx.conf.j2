@@ -36,6 +36,16 @@ http {
     }
 
     server {
+    listen 443 ssl default_server;
+    server_name _;  # the underscore is a common catch-all
+
+    ssl_certificate     /etc/ssl/certs/default.crt;
+    ssl_certificate_key /etc/ssl/private/default.key;
+
+    return 404;
+    }
+
+    server {
         server_name   www.domain.org;
         listen        443 ssl;
 
