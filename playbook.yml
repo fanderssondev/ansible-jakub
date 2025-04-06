@@ -6,10 +6,10 @@
     setup_groups: "{{ my_groups }}"
     setup_users: "{{ my_users }}"
     setup_templates: "{{ my_hosts }}"
-    nginx_dirs: "{{ my_dirs }}"
+    # nginx_dirs: "{{ my_dirs }}"
     nginx_auth: "{{ my_auth }}"
-    nginx_files: "{{ my_files }}"
-    nginx_templates: "{{ my_templates }}"
+    # nginx_files: "{{ my_files }}"
+    # nginx_templates: "{{ my_templates }}"
 
   tasks:
     - name: Include Setup Role

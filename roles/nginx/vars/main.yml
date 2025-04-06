@@ -1,0 +1,59 @@
+---
+nginx_templates:
+  - src: nginx.conf.j2
+    dest: /etc/nginx/nginx.conf
+    owner: root
+    group: root
+    mode: "0644"
+  - src: index.html.j2
+    dest: /websites/www.domain.org/index.html
+    site: www.domain.org
+    owner: "{{ nginx_user }}"
+    group: "{{ nginx_user }}"
+    mode: "0644"
+  - src: index.html.j2
+    dest: /websites/www.example.net/index.html
+    site: www.example.net
+    owner: "{{ nginx_user }}"
+    group: "{{ nginx_user }}"
+    mode: "0644"
+
+nginx_dirs:
+  - path: /usr/share/nginx/logs
+    state: directory
+    owner: "{{ nginx_user }}"
+    group: "{{ nginx_user }}"
+  - path: /websites/www.example.net
+    state: directory
+    owner: "{{ nginx_user }}"
+    group: "{{ nginx_user }}"
+  - path: /websites/www.domain.org
+    state: directory
+    owner: "{{ nginx_user }}"
+    group: "{{ nginx_user }}"
+  - path: /usr/share/nginx/logs/error.log
+    state: touch
+    owner: "{{ nginx_user }}"
+    group: "{{ nginx_user }}"
+    mode: "0644"
+    modification_time: preserve
+    access_time: preserve
+  - path: /etc/ssl/private
+    state: directory
+    mode: "0700"
+
+nginx_files:
+  - src: www.domain.org.crt
+    dest: /etc/ssl/certs/www.domain.org.crt
+  - src: www.domain.org.key
+    dest: /etc/ssl/private/www.domain.org.key
+    mode: "0600"
+  - src: default.crt
+    dest: /etc/ssl/certs/default.crt
+    mode: "0600"
+  - src: default.key
+    dest: /etc/ssl/private/default.key
+    mode: "0600"
+  - src: dhparam.pem
+    dest: /etc/ssl/certs/dhparam.pem
+    mode: "0600"

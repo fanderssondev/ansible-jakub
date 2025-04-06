@@ -4,3 +4,5 @@ nginx_packages:
 
 nginx_pip_packages:
   - passlib
+
+nginx_user: nginx

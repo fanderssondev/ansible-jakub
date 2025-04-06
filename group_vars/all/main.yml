@@ -1,0 +1,103 @@
+user_ssh_key: "{{ lookup('file', lookup('env', 'HOME') ~ '/.ssh/id_ansible.pub') }}"
+
+packages:
+  # - nginx
+  # - libselinux
+  # - libsemanage
+  # - python3-libsemanage
+  # - python3-firewall
+  # - nfs-utils
+
+my_hosts:
+  - src: hosts.j2
+    dest: /etc/hosts
+    owner: root
+    group: root
+    mode: "0644"
+
+my_users:
+  - name: john
+    sudo: true
+    user_id: 4000
+    main_group: john
+    group_list:
+      - developers
+      - users
+    password: "$6$rounds=656000$mysecretsalt$L5TfnY7pEWOF0TQfksow3vO3hizg7G.P7sECrIdg8nEyz2jLgO59o3doQcnI/2qMdFYIH1J1HYyXuzPDfIryN."
+    authorized_keys:
+      - "{{ user_ssh_key }}"
+  - name: jane
+    user_id: 4100
+    main_group: users
+    group_list:
+      - testers
+    authorized_keys:
+      - "{{ user_ssh_key }}"
+
+my_groups:
+  - name: developers
+    gid: 5000
+  - name: testers
+  - name: users
+    gid: 4100
+  - name: john
+    gid: 4000
+#
+# my_templates:
+#   - src: nginx.conf.j2
+#     dest: /etc/nginx/nginx.conf
+#     owner: root
+#     group: root
+#     mode: "0644"
+#   - src: index.html.j2
+#     dest: /websites/www.domain.org/index.html
+#     site: www.domain.org
+#     owner: "{{ nginx_user }}"
+#     group: "{{ nginx_user }}"
+#     mode: "0644"
+#   - src: index.html.j2
+#     dest: /websites/www.example.net/index.html
+#     site: www.example.net
+#     owner: "{{ nginx_user }}"
+#     group: "{{ nginx_user }}"
+#     mode: "0644"
+
+# my_dirs:
+#   - path: /usr/share/nginx/logs
+#     state: directory
+#     owner: "{{ nginx_user }}"
+#     group: "{{ nginx_user }}"
+#   - path: /websites/www.example.net
+#     state: directory
+#     owner: "{{ nginx_user }}"
+#     group: "{{ nginx_user }}"
+#   - path: /websites/www.domain.org
+#     state: directory
+#     owner: "{{ nginx_user }}"
+#     group: "{{ nginx_user }}"
+#   - path: /usr/share/nginx/logs/error.log
+#     state: touch
+#     owner: "{{ nginx_user }}"
+#     group: "{{ nginx_user }}"
+#     mode: "0644"
+#     modification_time: preserve
+#     access_time: preserve
+#   - path: /etc/ssl/private
+#     state: directory
+#     mode: "0700"
+
+# my_files:
+#   - src: www.domain.org.crt
+#     dest: /etc/ssl/certs/www.domain.org.crt
+#   - src: www.domain.org.key
+#     dest: /etc/ssl/private/www.domain.org.key
+#     mode: "0600"
+#   - src: default.crt
+#     dest: /etc/ssl/certs/default.crt
+#     mode: "0600"
+#   - src: default.key
+#     dest: /etc/ssl/private/default.key
+#     mode: "0600"
+#   - src: dhparam.pem
+#     dest: /etc/ssl/certs/dhparam.pem
+#     mode: "0600"
