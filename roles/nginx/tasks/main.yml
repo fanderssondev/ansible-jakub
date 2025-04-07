@@ -50,6 +50,7 @@
     group: "{{ item.group }}"
     mode: "{{ item.mode | default('0660') }}"
   loop: "{{ nginx_auth }}"
+  no_log: true
   notify:
     - restart_nginx
 
