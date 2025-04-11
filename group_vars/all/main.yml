@@ -1,4 +1,5 @@
-user_ssh_key: "{{ lookup('file', lookup('env', 'HOME') ~ '/.ssh/id_ansible.pub') }}"
+# user_ssh_key: "{{ lookup('file', lookup('env', 'HOME') ~ '/.ssh/id_ansible.pub') }}"
+user_ssh_key: "{{ lookup('community.general.onepassword', 'ansible.local.lab', ssh_format=true) }}"
 
 packages:
   # - nginx
