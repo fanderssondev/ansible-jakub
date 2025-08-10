@@ -3,23 +3,33 @@
   hosts: all
   become: true
   vars:
-    setup_groups: "{{ my_groups }}"
-    setup_users: "{{ my_users }}"
-    setup_templates: "{{ my_hosts }}"
+    setup_groups: '{{ my_groups }}'
+    setup_users: '{{ my_users }}'
+    setup_templates: '{{ my_hosts }}'
     # nginx_dirs: "{{ my_dirs }}"
-    nginx_auth: "{{ my_auth }}"
+    nginx_auth: '{{ my_auth }}'
     # nginx_files: "{{ my_files }}"
     # nginx_templates: "{{ my_templates }}"
 
   tasks:
-    - name: Include Setup Role
+    - name: Include roles
       ansible.builtin.include_role:
-        name: setup
+        name: '{{ role_name }}'
+      loop:
+        - setup
+        - nginx
+        - firewall
+      loop_control:
+        loop_var: role_name
 
-    - name: Include nginx role
-      ansible.builtin.include_role:
-        name: nginx
+    # - name: Include Setup Role
+    #   ansible.builtin.include_role:
+    #     name: setup
 
-    - name: Include nginx role
-      ansible.builtin.include_role:
-        name: firewall
+    # - name: Include nginx role
+    #   ansible.builtin.include_role:
+    #     name: nginx
+
+    # - name: Include nginx role
+    #   ansible.builtin.include_role:
+    #     name: firewall

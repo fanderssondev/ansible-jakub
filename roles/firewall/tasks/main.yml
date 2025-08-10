@@ -1,8 +1,12 @@
 ---
+- name: Include OS specific variables
+  ansible.builtin.include_vars:
+    file: '{{ ansible_os_family | lower }}.yml'
+
 - name: Install needed packages
   when: ansible_distribution
   ansible.builtin.package:
-    name: "{{ firewall_packages }}"
+    name: '{{ firewall_packages }}'
 
 - name: Include tasks for Redhat distros
   when: ansible_os_family == 'RedHat'
