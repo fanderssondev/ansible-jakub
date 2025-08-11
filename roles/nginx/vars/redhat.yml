@@ -1,6 +1,7 @@
 nginx_packages:
   - nginx
   - httpd-tools
+  - python3-pip
 
 nginx_pip_packages:
   - passlib

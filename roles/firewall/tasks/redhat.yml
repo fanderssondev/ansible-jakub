@@ -1,8 +1,15 @@
 ---
+- name: Start and enable firewalld
+  ansible.builtin.systemd:
+    name: firewalld
+    state: started
+    enabled: true
+
 - name: Open firewall port / services
   ansible.posix.firewalld:
-    service: "{{ item.service | default(omit) }}"
+    service: '{{ item.service | default(omit) }}'
     permanent: true
     state: enabled
     immediate: true
-  loop: "{{ firewall_services }}"
+  loop: '{{ firewall_services }}'
+  notify: restart_firewall

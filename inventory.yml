@@ -8,6 +8,8 @@ all:
     redhat:
       hosts:
         rocky9a:
+        rocky9b:
+        rocky9c:
     debian:
       hosts:
         ubuntu24a:

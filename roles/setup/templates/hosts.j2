@@ -1,27 +1,24 @@
 127.0.0.1   localhost localhost.localdomain localhost4 localhost4.localdomain4
 ::1         localhost localhost.localdomain localhost6 localhost6.localdomain6
 
-{% if ansible_all_ipv4_addresses[0].startswith('192.168.223.') or (ansible_all_ipv4_addresses | length > 1 and ansible_all_ipv4_addresses[1].startswith('192.168.223.')) %}
-192.168.223.101 rocky8a
-192.168.223.102 rocky8b
-192.168.223.103 rocky8c
+{% set target_223_ip = ansible_all_ipv4_addresses | select('match', '^192\.168\.223\.') | first | default('') %}
+{% set target_56_ip = ansible_all_ipv4_addresses | select('match', '^192\.168\.56\.') | first | default('') %}
+
+{% if target_223_ip %}
+192.168.223.101 rocky9a
+192.168.223.102 rocky9b
+192.168.223.103 rocky9c
 192.168.223.104 ubuntu24a
-192.168.223.105 rocky9a
-192.168.223.106 rocky9b
-192.168.223.107 rocky9c
 
-{{ ansible_all_ipv4_addresses[0] }} www.example.net
-{{ ansible_all_ipv4_addresses[0] }} www.domain.org
+{{ target_223_ip }} www.example.net
+{{ target_223_ip }} www.domain.org
 
-{% elif ansible_all_ipv4_addresses[0].startswith('192.168.56.') or (ansible_all_ipv4_addresses | length > 1 and ansible_all_ipv4_addresses[1].startswith('192.168.56.')) %}
-192.168.56.101 rocky8a
-192.168.56.102 rocky8b
-192.168.56.103 rocky8c
+{% elif target_56_ip %}
+192.168.56.101 rocky9a
+192.168.56.102 rocky9b
+192.168.56.103 rocky9c
 192.168.56.104 ubuntu24a
-192.168.56.105 rocky9a
-192.168.56.106 rocky9b
-192.168.56.107 rocky9c
 
-{{ ansible_all_ipv4_addresses[0] }} www.example.net
-{{ ansible_all_ipv4_addresses[0] }} www.domain.org
+{{ target_56_ip }} www.example.net
+{{ target_56_ip }} www.domain.org
 {% endif %}
