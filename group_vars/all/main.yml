@@ -1,5 +1,6 @@
 # user_ssh_key: "{{ lookup('file', lookup('env', 'HOME') ~ '/.ssh/id_ansible.pub') }}"
-user_ssh_key: "{{ lookup('community.general.onepassword', 'ansible.local.lab', ssh_format=true) }}"
+# user_ssh_key: "{{ lookup('community.general.onepassword', 'ansible.local.lab', ssh_format=true) }}"
+user_ssh_key: "{{ lookup('community.general.onepassword', 'ansible.local.lab', vault='dev', field='public key') }}"
 
 packages:
   # - nginx
@@ -14,7 +15,7 @@ my_hosts:
     dest: /etc/hosts
     owner: root
     group: root
-    mode: "0644"
+    mode: '0644'
 
 my_users:
   - name: john
@@ -24,16 +25,16 @@ my_users:
     group_list:
       - developers
       - users
-    password: "$6$rounds=656000$mysecretsalt$L5TfnY7pEWOF0TQfksow3vO3hizg7G.P7sECrIdg8nEyz2jLgO59o3doQcnI/2qMdFYIH1J1HYyXuzPDfIryN."
+    password: '$6$rounds=656000$mysecretsalt$L5TfnY7pEWOF0TQfksow3vO3hizg7G.P7sECrIdg8nEyz2jLgO59o3doQcnI/2qMdFYIH1J1HYyXuzPDfIryN.'
     authorized_keys:
-      - "{{ user_ssh_key }}"
+      - '{{ user_ssh_key }}'
   - name: jane
     user_id: 4100
     main_group: users
     group_list:
       - testers
     authorized_keys:
-      - "{{ user_ssh_key }}"
+      - '{{ user_ssh_key }}'
 
 my_groups:
   - name: developers
