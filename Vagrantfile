@@ -13,51 +13,49 @@ ANSIBLE_USER = ENV['ANSIBLE_USER'] || "ansible"
 ONEPASSWORD_CREDS_ID = "cu36afxxckm4mgnnkiltkne44u"  # Login credentials
 ONEPASSWORD_SSH_KEY_ID = "kp7dx7dk3qq7h565ivc2fjslle"  # SSH key
 
-# Function to safely execute 1Password CLI commands
-def get_1password_field(item_id, field, reveal = false)
-  reveal_flag = reveal ? "--reveal" : ""
-  command = "op item get #{item_id} #{reveal_flag} --fields '#{field}' 2>/dev/null"
-  
-  result = `#{command}`.strip
-  if $?.success? && !result.empty?
-    return result
-  else
-    puts "Error: Could not retrieve '#{field}' from 1Password item #{item_id}"
-    puts "Make sure you're authenticated: op signin"
-    exit 1
-  end
-end
-
-# Check if 1Password CLI is available and fetch credentials on host
+# Function to fetch credentials from 1Password (only when needed)
 def fetch_1password_credentials
-  # Check if op command is available
+  # Check if 1Password CLI is available
   unless system("command -v op > /dev/null 2>&1")
-    puts "Error: 1Password CLI (op) is not installed or not in PATH"
-    puts "Please install 1Password CLI: https://developer.1password.com/docs/cli/get-started/"
+    puts "Error: 1Password CLI (op) is not installed"
+    puts "Please install: https://developer.1password.com/docs/cli/get-started/"
     exit 1
   end
 
   # Check authentication
   unless system("op whoami > /dev/null 2>&1")
     puts "Error: Not authenticated with 1Password CLI"
-    puts "Please sign in: op signin"
+    puts "Please run: op signin"
     exit 1
   end
 
   puts "Fetching credentials from 1Password..."
   
-  credentials = {
-    username: get_1password_field(ONEPASSWORD_CREDS_ID, "username"),
-    password: get_1password_field(ONEPASSWORD_CREDS_ID, "password", true),
-    ssh_public_key: get_1password_field(ONEPASSWORD_SSH_KEY_ID, "public key")
-  }
+  # username = `op item get #{ONEPASSWORD_CREDS_ID} --fields username 2>/dev/null`.strip
+  # password = `op item get #{ONEPASSWORD_CREDS_ID} --reveal --fields password 2>/dev/null`.strip
+  # ssh_key = `op item get #{ONEPASSWORD_SSH_KEY_ID} --fields 'public key' 2>/dev/null`.strip
+
+  username = "op://dev/.ansible_user_sudo_passwd/username"
+  password = "op://dev/.ansible_user_sudo_passwd/password"
+  ssh_key = "op://dev/ansible.local.lab/public key"
+  
+  if username.empty? || password.empty? || ssh_key.empty?
+    puts "Error: Could not retrieve all required data from 1Password"
+    puts "Check your 1Password item IDs and ensure you're authenticated"
+    exit 1
+  end
   
   puts "Successfully retrieved credentials from 1Password"
-  return credentials
+  return {
+    username: username,
+    password: password,
+    ssh_key: ssh_key
+  }
 end
 
-# Fetch credentials at Vagrant parse time (on host)
-CREDENTIALS = fetch_1password_credentials()
+# Only fetch credentials for provisioning commands
+NEEDS_CREDENTIALS = ARGV.any? { |arg| ['up', 'provision', 'reload'].include?(arg) }
+CREDENTIALS = NEEDS_CREDENTIALS ? fetch_1password_credentials() : { username: ANSIBLE_USER, password: '', ssh_key: '' }
 
 Vagrant.configure("2") do |config|
   config.vm.box = "rockylinux/9"
@@ -84,56 +82,44 @@ Vagrant.configure("2") do |config|
     vb.customize ["modifyvm", :id, "--vram", "16"]
   end
 
-  # Create ansible user with credentials from 1Password
-  config.vm.provision "shell", inline: <<-SHELL
-    ANSIBLE_USERNAME="#{CREDENTIALS[:username]}"
-    ANSIBLE_PASSWORD="#{CREDENTIALS[:password]}"
-    SSH_PUBLIC_KEY="#{CREDENTIALS[:ssh_public_key]}"
-    
-    echo "Setting up user: $ANSIBLE_USERNAME"
+  # Only add provisioning if we have credentials
+  if NEEDS_CREDENTIALS
+    # Create ansible user with credentials from 1Password
+    config.vm.provision "shell", inline: <<-SHELL
+      ANSIBLE_USERNAME="#{CREDENTIALS[:username]}"
+      ANSIBLE_PASSWORD="#{CREDENTIALS[:password]}"
+      SSH_PUBLIC_KEY="#{CREDENTIALS[:ssh_key]}"
+      
+      echo "Setting up user: $ANSIBLE_USERNAME"
 
-    # Create user if not exists
-    if ! id -u "$ANSIBLE_USERNAME" &>/dev/null; then
-      sudo useradd -m -G wheel -s /bin/bash "$ANSIBLE_USERNAME"
-      echo "$ANSIBLE_USERNAME:$ANSIBLE_PASSWORD" | sudo chpasswd
-      echo "Created user: $ANSIBLE_USERNAME"
-    else
-      echo "User $ANSIBLE_USERNAME already exists"
-    fi
+      # Create user if not exists
+      if ! id -u "$ANSIBLE_USERNAME" &>/dev/null; then
+        sudo useradd -m -G wheel -s /bin/bash "$ANSIBLE_USERNAME"
+        echo "$ANSIBLE_USERNAME:$ANSIBLE_PASSWORD" | sudo chpasswd
+        echo "Created user: $ANSIBLE_USERNAME"
+      else
+        echo "User $ANSIBLE_USERNAME already exists"
+      fi
 
-    # Setup SSH directory with proper permissions
-    sudo mkdir -p "/home/$ANSIBLE_USERNAME/.ssh"
-    sudo chmod 700 "/home/$ANSIBLE_USERNAME/.ssh"
-    sudo chown "$ANSIBLE_USERNAME:$ANSIBLE_USERNAME" "/home/$ANSIBLE_USERNAME/.ssh"
+      # Setup SSH directory with proper permissions
+      sudo mkdir -p "/home/$ANSIBLE_USERNAME/.ssh"
+      sudo chmod 700 "/home/$ANSIBLE_USERNAME/.ssh"
+      sudo chown "$ANSIBLE_USERNAME:$ANSIBLE_USERNAME" "/home/$ANSIBLE_USERNAME/.ssh"
 
-    # Add public key to authorized_keys from 1Password
-    echo "$SSH_PUBLIC_KEY" | sudo tee "/home/$ANSIBLE_USERNAME/.ssh/authorized_keys" > /dev/null
-    sudo chmod 600 "/home/$ANSIBLE_USERNAME/.ssh/authorized_keys"
-    sudo chown "$ANSIBLE_USERNAME:$ANSIBLE_USERNAME" "/home/$ANSIBLE_USERNAME/.ssh/authorized_keys"
-    echo "Added SSH public key for user: $ANSIBLE_USERNAME"
+      # Add public key to authorized_keys
+      echo "$SSH_PUBLIC_KEY" | sudo tee "/home/$ANSIBLE_USERNAME/.ssh/authorized_keys" > /dev/null
+      sudo chmod 600 "/home/$ANSIBLE_USERNAME/.ssh/authorized_keys"
+      sudo chown "$ANSIBLE_USERNAME:$ANSIBLE_USERNAME" "/home/$ANSIBLE_USERNAME/.ssh/authorized_keys"
+      echo "Added SSH public key for user: $ANSIBLE_USERNAME"
 
-    # Configure sudoers for passwordless sudo
-    echo "$ANSIBLE_USERNAME ALL=(ALL) NOPASSWD:ALL" | sudo tee "/etc/sudoers.d/$ANSIBLE_USERNAME" > /dev/null
-    sudo chmod 440 "/etc/sudoers.d/$ANSIBLE_USERNAME"
-    
-    echo "User setup completed successfully"
-    
-    # Clear sensitive variables from memory (though they're already in the shell script)
-    unset ANSIBLE_PASSWORD SSH_PUBLIC_KEY
-  SHELL
-
-  # Run Ansible playbook
-  config.vm.provision "ansible" do |ansible|
-    ansible.limit = VM_NAME
-    ansible.playbook = "playbook.yml"
-    ansible.inventory_path = "inventory.yml"
-    ansible.config_file = "ansible.cfg"
-    
-    # Additional Ansible options for better security and debugging
-    ansible.verbose = ENV['ANSIBLE_VERBOSE'] ? ENV['ANSIBLE_VERBOSE'] : false
-    ansible.extra_vars = {
-      ansible_user: CREDENTIALS[:username],  # Use actual username from 1Password
-      vm_name: VM_NAME
-    }
+      # Configure sudoers for passwordless sudo
+      echo "$ANSIBLE_USERNAME ALL=(ALL) NOPASSWD:ALL" | sudo tee "/etc/sudoers.d/$ANSIBLE_USERNAME" > /dev/null
+      sudo chmod 440 "/etc/sudoers.d/$ANSIBLE_USERNAME"
+      
+      echo "User setup completed successfully"
+      
+      # Clear sensitive variables from memory
+      unset ANSIBLE_PASSWORD SSH_PUBLIC_KEY
+    SHELL
   end
 end
